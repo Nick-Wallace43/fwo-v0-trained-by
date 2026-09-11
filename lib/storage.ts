@@ -5,8 +5,8 @@ import { seedData, seedFollowedIds } from './seed'
 // API means reimplementing this file (and repository) only. Nothing else changes.
 // A subscribe/snapshot store is exposed so React can bind via useSyncExternalStore.
 
-const DATA_KEY = 'trainedby:data:v1'
-const FOLLOW_KEY = 'trainedby:followed:v1'
+const DATA_KEY = 'trainedby:data:v2'
+const FOLLOW_KEY = 'trainedby:followed:v2'
 
 export interface AppState {
   data: AppData
