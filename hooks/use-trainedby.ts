@@ -1,0 +1,29 @@
+'use client'
+
+import { useMemo, useSyncExternalStore } from 'react'
+import * as repo from '@/lib/repository'
+import { getServerSnapshot, getSnapshot, subscribe } from '@/lib/storage'
+
+// The single bridge between UI and data. Components use only this hook; they
+// never import storage or repository directly. It subscribes to the store so
+// every follow/unfollow re-renders consumers automatically.
+export function useTrainedBy() {
+  const state = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+
+  return useMemo(
+    () => ({
+      influencers: state.data.influencers,
+      followedIds: state.followedIds,
+      followedCount: state.followedIds.length,
+      getInfluencer: repo.getInfluencer,
+      isFollowing: (id: string) => state.followedIds.includes(id),
+      follow: repo.follow,
+      unfollow: repo.unfollow,
+      toggleFollow: repo.toggleFollow,
+      getExercises: repo.getExercises,
+      getMeals: repo.getMeals,
+      getSupplements: repo.getSupplements,
+    }),
+    [state],
+  )
+}

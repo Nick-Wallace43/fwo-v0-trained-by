@@ -1,36 +1,30 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { Inter, Oswald } from 'next/font/google'
+import { AppShell } from '@/components/app-shell'
 import './globals.css'
 
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const oswald = Oswald({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-oswald',
+})
+
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'TrainedBy — Train like the creators you follow',
+  description:
+    'Your workouts, meals, and supplements, sourced from the fitness creators you follow.',
   generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' },
-  ],
+  colorScheme: 'dark',
+  themeColor: '#0a0f0c',
+  userScalable: false,
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({
@@ -39,9 +33,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className="antialiased">
-        {children}
+    <html lang="en" className={`${inter.variable} ${oswald.variable} bg-background`}>
+      <body className="font-sans antialiased">
+        <AppShell>{children}</AppShell>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
