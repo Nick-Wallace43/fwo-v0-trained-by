@@ -16,6 +16,7 @@ export interface Exercise {
   movementType: string
   compound: boolean
   doneBy: string[] // Influencer ids
+  gif?: string // Public path to a demo GIF, if one exists
 }
 
 export interface Supplement {

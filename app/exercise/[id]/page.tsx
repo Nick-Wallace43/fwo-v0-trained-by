@@ -49,6 +49,17 @@ export default function ExerciseDetailPage() {
         </div>
       </header>
 
+      {exercise.gif ? (
+        <section className="mt-6 overflow-hidden rounded-xl border border-border bg-card">
+          <img
+            src={exercise.gif || "/placeholder.svg"}
+            alt={`Animated demonstration of ${exercise.name}`}
+            className="mx-auto block h-auto w-full max-w-md bg-white object-contain"
+            loading="lazy"
+          />
+        </section>
+      ) : null}
+
       <section className="mt-6 rounded-xl border border-border bg-card p-4">
         <RatioBar count={followedHere} total={followedCount} verb="do this" size="lg" />
 
