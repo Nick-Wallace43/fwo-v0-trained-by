@@ -1,10 +1,11 @@
 'use client'
 
+import { CreatorAvatar } from '@/components/creator-avatar'
 import { FollowButton } from '@/components/follow-button'
 import { PageHeader } from '@/components/page-header'
 import { Tag } from '@/components/tag'
 import { useTrainedBy } from '@/hooks/use-trainedby'
-import { initials } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 export default function ProfilePage() {
   const { influencers, followedCount, isFollowing } = useTrainedBy()
@@ -46,17 +47,12 @@ export default function ProfilePage() {
                 }
               >
                 <div className="flex items-start gap-3">
-                  <div
-                    aria-hidden="true"
-                    className={
-                      'flex size-12 shrink-0 items-center justify-center rounded-full font-display text-base font-bold uppercase tracking-tight ' +
-                      (following
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-secondary text-secondary-foreground')
-                    }
-                  >
-                    {initials(influencer.name)}
-                  </div>
+                  <CreatorAvatar
+                    id={influencer.id}
+                    name={influencer.name}
+                    size={48}
+                    className={cn('ring-2', following ? 'ring-primary' : 'ring-border opacity-70')}
+                  />
                   <div className="min-w-0 flex-1">
                     <p className="font-display text-lg font-semibold uppercase leading-none tracking-tight text-balance">
                       {influencer.name}

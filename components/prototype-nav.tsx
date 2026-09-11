@@ -62,7 +62,7 @@ export function PrototypeNav() {
             <DropdownMenuItem key={link.href} asChild>
               <Link
                 href={link.href}
-                className={cn(pathname === link.href && 'bg-[#DCFEA8]')}
+                className={cn(pathname === link.href && 'bg-[#DCFEA8] text-black')}
               >
                 {link.name}
               </Link>

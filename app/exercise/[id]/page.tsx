@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { AiInsightsCard } from '@/components/ai-insights-card'
 import { BackLink } from '@/components/back-link'
 import { EmptyState } from '@/components/empty-state'
-import { InitialsAvatar } from '@/components/initials-avatar'
+import { CreatorAvatar } from '@/components/creator-avatar'
 import { RatioBar } from '@/components/ratio-bar'
 import { Tag } from '@/components/tag'
 import { formatMovementType, getHowToSteps, getWhyItMatters } from '@/lib/exercise-insights'
@@ -59,7 +59,7 @@ export default function ExerciseDetailPage() {
               if (!influencer) return null
               return (
                 <li key={id} className="flex items-center gap-3">
-                  <InitialsAvatar name={influencer.name} className="size-8 text-xs" />
+                  <CreatorAvatar id={influencer.id} name={influencer.name} size={32} />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium leading-tight">{influencer.name}</p>
                     <p className="truncate text-xs text-muted-foreground">{`@${influencer.handle} · ${influencer.focus}`}</p>

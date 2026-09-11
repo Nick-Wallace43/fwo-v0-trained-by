@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import type { Exercise } from '@/lib/types'
-import { InitialsAvatar } from '@/components/initials-avatar'
+import { CreatorAvatar } from '@/components/creator-avatar'
 import { RatioBar } from '@/components/ratio-bar'
 import { Tag } from '@/components/tag'
 import { formatMovementType } from '@/lib/exercise-insights'
@@ -56,7 +56,7 @@ export function ExerciseCard({ exercise }: { exercise: Exercise }) {
                 key={id}
                 className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 py-0.5 pl-0.5 pr-2.5 text-xs font-medium text-primary"
               >
-                <InitialsAvatar name={influencer.name} className="size-5 text-[9px]" />
+                <CreatorAvatar id={influencer.id} name={influencer.name} size={20} />
                 {`@${influencer.handle}`}
               </span>
             )

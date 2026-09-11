@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { CreatorAvatar } from '@/components/creator-avatar'
 import { useTrainedBy } from '@/hooks/use-trainedby'
-import { initials } from '@/lib/utils'
 
 // Compact "who you follow" strip: overlapping avatar circles for followed
 // creators plus a "+N" overflow chip. The whole strip links to Profile.
@@ -26,14 +26,14 @@ export function FollowStrip({ max = 6 }: { max?: number }) {
     >
       <div className="flex items-center">
         {shown.map((influencer, index) => (
-          <span
+          <CreatorAvatar
             key={influencer.id}
-            className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-card bg-primary/15 font-display text-xs font-semibold uppercase text-primary ring-1 ring-primary/30"
+            id={influencer.id}
+            name={influencer.name}
+            size={36}
+            className="border-2 border-card"
             style={{ marginLeft: index === 0 ? 0 : '-0.6rem', zIndex: shown.length - index }}
-            title={influencer.name}
-          >
-            {initials(influencer.name)}
-          </span>
+          />
         ))}
         {overflow > 0 ? (
           <span
