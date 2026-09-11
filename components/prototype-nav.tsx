@@ -41,16 +41,13 @@ export function PrototypeNav() {
   return (
     <div className="fixed right-0 top-1/2 z-[9999] -translate-y-1/2">
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            type="button"
-            aria-label="Prototype navigation"
-            className="flex h-8 w-8 items-center justify-center rounded-l-md bg-[#000000] transition-opacity hover:opacity-90"
-          >
-            <FlaskConical
-              className={cn('h-4 w-4 text-[#DCFEA8]', isShaking && 'animate-[proto-shake_1.2s_ease-in-out]')}
-            />
-          </button>
+        <DropdownMenuTrigger
+          aria-label="Prototype navigation"
+          className="flex h-8 w-8 items-center justify-center rounded-l-md bg-[#000000] transition-opacity hover:opacity-90"
+        >
+          <FlaskConical
+            className={cn('h-4 w-4 text-[#DCFEA8]', isShaking && 'animate-[proto-shake_1.2s_ease-in-out]')}
+          />
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"

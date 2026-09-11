@@ -10,12 +10,14 @@ export function ContentLayout({
   description,
   followedOnly,
   onFilterChange,
+  topSlot,
   children,
 }: {
   title: string
   description: string
   followedOnly: boolean
   onFilterChange: (followedOnly: boolean) => void
+  topSlot?: ReactNode
   children: ReactNode
 }) {
   return (
@@ -26,6 +28,8 @@ export function ContentLayout({
         </h1>
         <p className="mt-2 text-sm text-muted-foreground text-pretty">{description}</p>
       </header>
+
+      {topSlot}
 
       <div className="mb-5">
         <FilterToggle value={followedOnly} onChange={onFilterChange} />
