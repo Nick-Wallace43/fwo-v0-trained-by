@@ -60,11 +60,35 @@ export function toggleFollow(id: string): void {
   else follow(id)
 }
 
-export function getExercises(followedOnly: boolean): Exercise[] {
+// Canonical muscle-group order for the selector. Groups the seed doesn't use
+// are dropped so chips only show groups that actually have exercises.
+const MUSCLE_GROUP_ORDER = [
+  'chest',
+  'back',
+  'shoulders',
+  'biceps',
+  'triceps',
+  'quads',
+  'hamstrings',
+  'calves',
+  'forearms',
+  'traps',
+  'abs',
+]
+
+export function getMuscleGroups(): string[] {
+  const present = new Set(getSnapshot().data.exercises.map((exercise) => exercise.muscleGroup.toLowerCase()))
+  return MUSCLE_GROUP_ORDER.filter((group) => present.has(group))
+}
+
+export function getExercises(followedOnly: boolean, muscleGroup?: string): Exercise[] {
   const { data, followedIds } = getSnapshot()
-  const items = followedOnly
+  let items = followedOnly
     ? data.exercises.filter((exercise) => isFollowed(exercise.doneBy, followedIds))
     : data.exercises
+  if (muscleGroup) {
+    items = items.filter((exercise) => exercise.muscleGroup.toLowerCase() === muscleGroup.toLowerCase())
+  }
   return sortByFollowedEndorsers(items, (exercise) => exercise.doneBy, followedIds)
 }
 

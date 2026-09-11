@@ -1,18 +1,49 @@
 'use client'
 
 import { Dumbbell } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { ChipSelector } from '@/components/chip-selector'
 import { ContentLayout } from '@/components/content-layout'
 import { EmptyState } from '@/components/empty-state'
+import { ExerciseCard } from '@/components/exercise-card'
 import { FollowStrip } from '@/components/follow-strip'
-import { ItemCard } from '@/components/item-card'
-import { Tag } from '@/components/tag'
+import { SearchInput } from '@/components/search-input'
+import { SegmentedControl } from '@/components/segmented-control'
 import { useTrainedBy } from '@/hooks/use-trainedby'
+
+type CompoundFilter = 'all' | 'compound' | 'isolation'
+
+const COMPOUND_OPTIONS: { label: string; value: CompoundFilter }[] = [
+  { label: 'All', value: 'all' },
+  { label: 'Compound', value: 'compound' },
+  { label: 'Isolation', value: 'isolation' },
+]
 
 export default function WorkoutsPage() {
   const [followedOnly, setFollowedOnly] = useState(true)
-  const { getExercises } = useTrainedBy()
-  const exercises = getExercises(followedOnly)
+  const [muscleGroup, setMuscleGroup] = useState<string | null>(null)
+  const [compoundFilter, setCompoundFilter] = useState<CompoundFilter>('all')
+  const [search, setSearch] = useState('')
+  const { getExercises, getMuscleGroups } = useTrainedBy()
+
+  const muscleGroups = getMuscleGroups()
+  // Default to the first available group until the user picks one.
+  const activeGroup = muscleGroup ?? muscleGroups[0] ?? ''
+  const exercises = getExercises(followedOnly, activeGroup || undefined)
+
+  // Compound and search are display-level refinements applied over the
+  // follow-sorted list, so the "count descending" order is preserved.
+  const visible = useMemo(() => {
+    const query = search.trim().toLowerCase()
+    return exercises.filter((exercise) => {
+      if (compoundFilter === 'compound' && !exercise.compound) return false
+      if (compoundFilter === 'isolation' && exercise.compound) return false
+      if (query && !exercise.name.toLowerCase().includes(query)) return false
+      return true
+    })
+  }, [exercises, compoundFilter, search])
+
+  const filtersActive = compoundFilter !== 'all' || search.trim().length > 0
 
   return (
     <ContentLayout
@@ -20,30 +51,46 @@ export default function WorkoutsPage() {
       description="Go-to movements from the creators you follow."
       followedOnly={followedOnly}
       onFilterChange={setFollowedOnly}
-      topSlot={<FollowStrip />}
+      topSlot={
+        <div className="mb-5 flex flex-col gap-3">
+          <FollowStrip />
+          <ChipSelector
+            ariaLabel="Muscle group"
+            options={muscleGroups.map((group) => ({ id: group, label: group }))}
+            value={activeGroup}
+            onChange={setMuscleGroup}
+          />
+          <div className="flex flex-wrap items-center gap-3">
+            <SegmentedControl
+              ariaLabel="Movement type"
+              options={COMPOUND_OPTIONS}
+              value={compoundFilter}
+              onChange={setCompoundFilter}
+            />
+            <SearchInput
+              value={search}
+              onChange={setSearch}
+              placeholder="Search exercises"
+              className="min-w-[12rem] flex-1"
+            />
+          </div>
+        </div>
+      }
     >
-      {exercises.length === 0 ? (
+      {visible.length === 0 ? (
         <EmptyState
           icon={Dumbbell}
-          title="No exercises yet"
-          description="Follow a creator to see their movements, or switch to All."
+          title={filtersActive ? 'No matches' : 'No exercises here'}
+          description={
+            filtersActive
+              ? 'No exercises match your filters — try a different search, movement type, or muscle group.'
+              : 'No followed creators train this muscle group yet — switch to All or pick another group.'
+          }
         />
       ) : (
         <div className="flex flex-col gap-3">
-          {exercises.map((exercise) => (
-            <ItemCard
-              key={exercise.id}
-              title={exercise.name}
-              attributionLabel="Done by"
-              creatorIds={exercise.doneBy}
-              tags={
-                <>
-                  <Tag>{exercise.muscleGroup}</Tag>
-                  <Tag variant="outline">{exercise.movementType}</Tag>
-                  {exercise.compound ? <Tag variant="accent">Compound</Tag> : null}
-                </>
-              }
-            />
+          {visible.map((exercise) => (
+            <ExerciseCard key={exercise.id} exercise={exercise} />
           ))}
         </div>
       )}
