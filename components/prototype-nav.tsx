@@ -69,9 +69,9 @@ export function PrototypeNav() {
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={replayOnboarding}>Replay Onboarding</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => replayOnboarding()}>Replay Onboarding</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={handleReset} className="text-destructive">
+          <DropdownMenuItem onClick={handleReset} className="text-destructive">
             Reset App Data
           </DropdownMenuItem>
         </DropdownMenuContent>
