@@ -4,6 +4,7 @@ import { Dumbbell } from 'lucide-react'
 import { useState } from 'react'
 import { ContentLayout } from '@/components/content-layout'
 import { EmptyState } from '@/components/empty-state'
+import { FollowStrip } from '@/components/follow-strip'
 import { ItemCard } from '@/components/item-card'
 import { Tag } from '@/components/tag'
 import { useTrainedBy } from '@/hooks/use-trainedby'
@@ -19,6 +20,7 @@ export default function WorkoutsPage() {
       description="Go-to movements from the creators you follow."
       followedOnly={followedOnly}
       onFilterChange={setFollowedOnly}
+      topSlot={<FollowStrip />}
     >
       {exercises.length === 0 ? (
         <EmptyState
