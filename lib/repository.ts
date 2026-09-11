@@ -108,11 +108,23 @@ export function getMeals(followedOnly: boolean): Meal[] {
   return sortByFollowedEndorsers(items, (meal) => meal.madeBy, followedIds)
 }
 
-export function getSupplements(followedOnly: boolean): Supplement[] {
+// Canonical category order for the filter chips. Categories the seed
+// doesn't use are dropped so chips only show categories that actually exist.
+const SUPPLEMENT_CATEGORY_ORDER = ['performance', 'protein', 'health', 'recovery']
+
+export function getSupplementCategories(): string[] {
+  const present = new Set(getSnapshot().data.supplements.map((supplement) => supplement.category.toLowerCase()))
+  return SUPPLEMENT_CATEGORY_ORDER.filter((category) => present.has(category))
+}
+
+export function getSupplements(followedOnly: boolean, category?: string): Supplement[] {
   const { data, followedIds } = getSnapshot()
-  const items = followedOnly
+  let items = followedOnly
     ? data.supplements.filter((supplement) => isFollowed(supplement.endorsedBy, followedIds))
     : data.supplements
+  if (category) {
+    items = items.filter((supplement) => supplement.category.toLowerCase() === category.toLowerCase())
+  }
   return sortByFollowedEndorsers(items, (supplement) => supplement.endorsedBy, followedIds)
 }
 
