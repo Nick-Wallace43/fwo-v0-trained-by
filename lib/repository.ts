@@ -81,6 +81,10 @@ export function getMuscleGroups(): string[] {
   return MUSCLE_GROUP_ORDER.filter((group) => present.has(group))
 }
 
+export function getExercise(id: string): Exercise | undefined {
+  return getSnapshot().data.exercises.find((exercise) => exercise.id === id)
+}
+
 export function getExercises(followedOnly: boolean, muscleGroup?: string): Exercise[] {
   const { data, followedIds } = getSnapshot()
   let items = followedOnly
