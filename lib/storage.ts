@@ -1,5 +1,5 @@
-import type { AppData, SavedWorkout } from './types'
-import { seedData, seedFollowedIds } from './seed'
+import type { AppData, SavedWorkout, UserStats } from './types'
+import { defaultUserStats, seedData, seedFollowedIds } from './seed'
 
 // Low-level persistence adapter. Today this is localStorage; swapping to a real
 // API means reimplementing this file (and repository) only. Nothing else changes.
@@ -8,15 +8,22 @@ import { seedData, seedFollowedIds } from './seed'
 const DATA_KEY = 'trainedby:data:v2'
 const FOLLOW_KEY = 'trainedby:followed:v2'
 const WORKOUTS_KEY = 'trainedby:workouts:v1'
+const USER_STATS_KEY = 'trainedby:userstats:v1'
 
 export interface AppState {
   data: AppData
   followedIds: string[]
   savedWorkouts: SavedWorkout[]
+  userStats: UserStats
 }
 
 // Stable reference used for SSR and hydration so client/server markup matches.
-const SERVER_STATE: AppState = { data: seedData, followedIds: seedFollowedIds, savedWorkouts: [] }
+const SERVER_STATE: AppState = {
+  data: seedData,
+  followedIds: seedFollowedIds,
+  savedWorkouts: [],
+  userStats: defaultUserStats,
+}
 
 let cache: AppState | null = null
 const listeners = new Set<() => void>()
@@ -35,9 +42,13 @@ function hydrate(): AppState {
     const savedWorkouts: SavedWorkout[] = rawWorkouts ? (JSON.parse(rawWorkouts) as SavedWorkout[]) : []
     if (!rawWorkouts) localStorage.setItem(WORKOUTS_KEY, JSON.stringify(savedWorkouts))
 
-    return { data, followedIds, savedWorkouts }
+    const rawUserStats = localStorage.getItem(USER_STATS_KEY)
+    const userStats: UserStats = rawUserStats ? (JSON.parse(rawUserStats) as UserStats) : defaultUserStats
+    if (!rawUserStats) localStorage.setItem(USER_STATS_KEY, JSON.stringify(defaultUserStats))
+
+    return { data, followedIds, savedWorkouts, userStats }
   } catch {
-    return { data: seedData, followedIds: seedFollowedIds, savedWorkouts: [] }
+    return { data: seedData, followedIds: seedFollowedIds, savedWorkouts: [], userStats: defaultUserStats }
   }
 }
 
@@ -81,4 +92,14 @@ export function persistSavedWorkouts(workouts: SavedWorkout[]): void {
     // Ignore write failures (e.g. private mode); in-memory state still updates.
   }
   commit({ ...current, savedWorkouts: workouts })
+}
+
+export function persistUserStats(stats: UserStats): void {
+  const current = getSnapshot()
+  try {
+    localStorage.setItem(USER_STATS_KEY, JSON.stringify(stats))
+  } catch {
+    // Ignore write failures (e.g. private mode); in-memory state still updates.
+  }
+  commit({ ...current, userStats: stats })
 }
