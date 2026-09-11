@@ -16,10 +16,10 @@ export function FollowButton({ influencerId }: { influencerId: string }) {
       onClick={() => toggleFollow(influencerId)}
       aria-pressed={following}
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold uppercase tracking-wide transition-colors',
+        'inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold uppercase tracking-wide transition-all active:scale-95',
         following
-          ? 'border border-border bg-secondary text-secondary-foreground hover:border-primary/40'
-          : 'bg-primary text-primary-foreground hover:opacity-90',
+          ? 'bg-primary text-primary-foreground hover:opacity-90'
+          : 'border border-border bg-transparent text-muted-foreground hover:border-primary/40 hover:text-foreground',
       )}
     >
       {following ? <Check className="size-4" /> : <Plus className="size-4" />}

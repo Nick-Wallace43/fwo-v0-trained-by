@@ -16,6 +16,13 @@ function initials(name: string): string {
 export default function ProfilePage() {
   const { influencers, followedCount, isFollowing } = useTrainedBy()
 
+  const sortedInfluencers = [...influencers].sort((a, b) => {
+    const aFollowing = isFollowing(a.id)
+    const bFollowing = isFollowing(b.id)
+    if (aFollowing === bFollowing) return 0
+    return aFollowing ? -1 : 1
+  })
+
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
       <header className="mb-6">
@@ -34,12 +41,17 @@ export default function ProfilePage() {
           Creators
         </h2>
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {influencers.map((influencer) => {
+          {sortedInfluencers.map((influencer) => {
             const following = isFollowing(influencer.id)
             return (
               <li
                 key={influencer.id}
-                className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4"
+                className={
+                  'flex flex-col gap-4 rounded-xl border bg-card p-4 transition-all ' +
+                  (following
+                    ? 'border-primary/60 ring-1 ring-primary/20'
+                    : 'border-border opacity-70')
+                }
               >
                 <div className="flex items-start gap-3">
                   <div
