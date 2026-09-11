@@ -1,6 +1,7 @@
 'use client'
 
 import { RefreshCw } from 'lucide-react'
+import Link from 'next/link'
 import { Tag } from '@/components/tag'
 import { buildWhyLine, formatMovementType } from '@/lib/exercise-insights'
 import { useTrainedBy } from '@/hooks/use-trainedby'
@@ -26,8 +27,12 @@ export function WorkoutExerciseRow({
   const why = buildWhyLine(spec.movementType, count, followedCount)
 
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-border bg-card p-4">
-      <div className="min-w-0 flex-1">
+    <div className="flex items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/50">
+      <Link
+        href={`/exercise/${exercise.id}`}
+        className="min-w-0 flex-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        aria-label={`View details for ${exercise.name}`}
+      >
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="font-display text-base font-semibold uppercase leading-tight tracking-tight text-balance">
             {exercise.name}
@@ -39,7 +44,7 @@ export function WorkoutExerciseRow({
           {spec.sets} x {spec.repsLabel}
         </p>
         <p className="mt-1 text-sm text-muted-foreground text-pretty">{why}</p>
-      </div>
+      </Link>
       {onSwap && (
         <button
           type="button"
