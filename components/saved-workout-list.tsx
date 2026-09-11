@@ -10,7 +10,7 @@ export function SavedWorkoutList({ workouts }: { workouts: SavedWorkout[] }) {
   return (
     <div className="flex flex-col gap-2">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">My Workouts</h2>
-      <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="edge-fade-x -mx-4 flex gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {workouts.map((workout) => (
           <Link
             key={workout.id}

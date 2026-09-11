@@ -27,10 +27,10 @@ export function MultiChipSelector({
             aria-pressed={active}
             onClick={() => onToggle(option.id)}
             className={cn(
-              'inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-colors',
+              'inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-sm font-semibold uppercase tracking-wide transition-all active:scale-95',
               active
                 ? 'border-primary bg-primary text-primary-foreground'
-                : 'border-border bg-card text-muted-foreground hover:text-foreground',
+                : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground',
             )}
           >
             {active && <Check className="size-3.5" aria-hidden="true" />}

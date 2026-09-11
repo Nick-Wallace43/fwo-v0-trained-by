@@ -46,7 +46,7 @@ export function WorkoutExerciseRow({
           onClick={onSwap}
           disabled={swapDisabled}
           aria-label={`Swap ${exercise.name} for an alternative`}
-          className="flex size-9 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary disabled:opacity-30 disabled:hover:border-border disabled:hover:text-muted-foreground"
+          className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-all hover:border-primary hover:text-primary active:scale-95 disabled:opacity-30 disabled:active:scale-100 disabled:hover:border-border disabled:hover:text-muted-foreground"
         >
           <RefreshCw className="size-4" />
         </button>

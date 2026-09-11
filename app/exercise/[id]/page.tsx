@@ -1,15 +1,15 @@
 'use client'
 
-import { ArrowLeft, ListOrdered, Users } from 'lucide-react'
-import Link from 'next/link'
+import { ListOrdered, Users } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { AiInsightsCard } from '@/components/ai-insights-card'
+import { BackLink } from '@/components/back-link'
 import { EmptyState } from '@/components/empty-state'
 import { InitialsAvatar } from '@/components/initials-avatar'
+import { RatioBar } from '@/components/ratio-bar'
 import { Tag } from '@/components/tag'
 import { formatMovementType, getHowToSteps, getWhyItMatters } from '@/lib/exercise-insights'
 import { useTrainedBy } from '@/hooks/use-trainedby'
-import { cn } from '@/lib/utils'
 
 export default function ExerciseDetailPage() {
   const params = useParams<{ id: string }>()
@@ -20,7 +20,7 @@ export default function ExerciseDetailPage() {
   if (!exercise) {
     return (
       <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
-        <BackLink />
+        <BackLink href="/" label="Workouts" />
         <EmptyState
           icon={Users}
           title="Exercise not found"
@@ -31,13 +31,12 @@ export default function ExerciseDetailPage() {
   }
 
   const followedHere = countFollowedEndorsers(exercise.doneBy)
-  const ratio = followedCount > 0 ? followedHere / followedCount : 0
   const followedDoers = exercise.doneBy.filter(isFollowing)
   const steps = getHowToSteps(exercise.movementType)
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
-      <BackLink />
+      <BackLink href="/" label="Workouts" />
 
       <header className="mt-4">
         <h1 className="font-display text-3xl font-bold uppercase leading-none tracking-tight text-balance">
@@ -51,25 +50,7 @@ export default function ExerciseDetailPage() {
       </header>
 
       <section className="mt-6 rounded-xl border border-border bg-card p-4">
-        <p className="font-display text-xl font-semibold uppercase leading-tight tracking-tight">
-          <span className={cn(followedHere > 0 ? 'text-primary' : 'text-muted-foreground')}>{followedHere}</span>{' '}
-          <span className="text-muted-foreground">
-            {`of ${followedCount} ${followedCount === 1 ? 'person' : 'people'} you follow do this`}
-          </span>
-        </p>
-        <div
-          className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary"
-          role="progressbar"
-          aria-valuenow={followedHere}
-          aria-valuemin={0}
-          aria-valuemax={followedCount}
-          aria-label={`${followedHere} of ${followedCount} followed creators do this`}
-        >
-          <div
-            className="h-full rounded-full bg-primary transition-[width]"
-            style={{ width: `${Math.round(ratio * 100)}%` }}
-          />
-        </div>
+        <RatioBar count={followedHere} total={followedCount} verb="do this" size="lg" />
 
         {followedDoers.length > 0 ? (
           <ul className="mt-4 flex flex-col gap-2 border-t border-border pt-3">
@@ -125,14 +106,3 @@ export default function ExerciseDetailPage() {
   )
 }
 
-function BackLink() {
-  return (
-    <Link
-      href="/"
-      className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-    >
-      <ArrowLeft className="size-4" aria-hidden="true" />
-      Workouts
-    </Link>
-  )
-}

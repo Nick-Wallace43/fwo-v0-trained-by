@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import type { Exercise } from '@/lib/types'
 import { InitialsAvatar } from '@/components/initials-avatar'
+import { RatioBar } from '@/components/ratio-bar'
 import { Tag } from '@/components/tag'
 import { formatMovementType } from '@/lib/exercise-insights'
 import { useTrainedBy } from '@/hooks/use-trainedby'
@@ -18,7 +19,6 @@ export function ExerciseCard({ exercise }: { exercise: Exercise }) {
 
   const followedHere = countFollowedEndorsers(exercise.doneBy)
   const muted = followedHere === 0
-  const ratio = followedCount > 0 ? followedHere / followedCount : 0
 
   const followedDoers = exercise.doneBy.filter(isFollowing)
   const shownDoers = followedDoers.slice(0, MAX_CHIPS)
@@ -44,28 +44,7 @@ export function ExerciseCard({ exercise }: { exercise: Exercise }) {
         {exercise.compound ? <Tag variant="accent">Compound</Tag> : null}
       </div>
 
-      <p className="mt-4 font-display text-lg font-semibold uppercase leading-tight tracking-tight">
-        <span className={cn(followedHere > 0 ? 'text-primary' : 'text-muted-foreground')}>
-          {followedHere}
-        </span>{' '}
-        <span className="text-muted-foreground">
-          {`of ${followedCount} ${followedCount === 1 ? 'person' : 'people'} you follow do this`}
-        </span>
-      </p>
-
-      <div
-        className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary"
-        role="progressbar"
-        aria-valuenow={followedHere}
-        aria-valuemin={0}
-        aria-valuemax={followedCount}
-        aria-label={`${followedHere} of ${followedCount} followed creators do this`}
-      >
-        <div
-          className="h-full rounded-full bg-primary transition-[width]"
-          style={{ width: `${Math.round(ratio * 100)}%` }}
-        />
-      </div>
+      <RatioBar className="mt-4" count={followedHere} total={followedCount} verb="do this" />
 
       {shownDoers.length > 0 ? (
         <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-3">

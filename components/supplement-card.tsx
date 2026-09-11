@@ -1,5 +1,6 @@
 import type { Supplement } from '@/lib/types'
 import { InitialsAvatar } from '@/components/initials-avatar'
+import { RatioBar } from '@/components/ratio-bar'
 import { Tag } from '@/components/tag'
 import { useTrainedBy } from '@/hooks/use-trainedby'
 import { cn } from '@/lib/utils'
@@ -14,7 +15,6 @@ export function SupplementCard({ supplement }: { supplement: Supplement }) {
 
   const followedHere = countFollowedEndorsers(supplement.endorsedBy)
   const muted = followedHere === 0
-  const ratio = followedCount > 0 ? followedHere / followedCount : 0
 
   const followedTakers = supplement.endorsedBy.filter(isFollowing)
   const shownTakers = followedTakers.slice(0, MAX_CHIPS)
@@ -24,7 +24,7 @@ export function SupplementCard({ supplement }: { supplement: Supplement }) {
     <div
       className={cn(
         'rounded-xl border border-border bg-card p-4 transition-all',
-        muted ? 'opacity-55 saturate-50' : '',
+        muted ? 'opacity-55 saturate-50' : 'hover:border-primary/30',
       )}
     >
       <div className="flex items-start justify-between gap-3">
@@ -37,28 +37,7 @@ export function SupplementCard({ supplement }: { supplement: Supplement }) {
         <Tag variant="outline">{supplement.category}</Tag>
       </div>
 
-      <p className="mt-4 font-display text-lg font-semibold uppercase leading-tight tracking-tight">
-        <span className={cn(followedHere > 0 ? 'text-primary' : 'text-muted-foreground')}>
-          {followedHere}
-        </span>{' '}
-        <span className="text-muted-foreground">
-          {`of ${followedCount} ${followedCount === 1 ? 'person' : 'people'} you follow take this`}
-        </span>
-      </p>
-
-      <div
-        className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary"
-        role="progressbar"
-        aria-valuenow={followedHere}
-        aria-valuemin={0}
-        aria-valuemax={followedCount}
-        aria-label={`${followedHere} of ${followedCount} followed creators take this`}
-      >
-        <div
-          className="h-full rounded-full bg-primary transition-[width]"
-          style={{ width: `${Math.round(ratio * 100)}%` }}
-        />
-      </div>
+      <RatioBar className="mt-4" count={followedHere} total={followedCount} verb="take this" />
 
       {shownTakers.length > 0 ? (
         <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-3">

@@ -118,7 +118,7 @@ export function OnboardingFlow({
                     onClick={() => toggle(influencer.id)}
                     aria-pressed={isSelected}
                     className={cn(
-                      'flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors',
+                      'flex min-h-11 w-full items-center gap-3 rounded-lg border p-3 text-left transition-all active:scale-[0.98]',
                       isSelected ? 'border-primary/60 bg-primary/10' : 'border-border bg-card opacity-60',
                     )}
                   >

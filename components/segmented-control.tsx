@@ -30,7 +30,7 @@ export function SegmentedControl<T extends string>({
             onClick={() => onChange(option.value)}
             aria-pressed={active}
             className={cn(
-              'rounded-md px-3.5 py-1.5 text-sm font-semibold uppercase tracking-wide transition-colors',
+              'inline-flex min-h-9 items-center rounded-md px-3.5 text-sm font-semibold uppercase tracking-wide transition-all active:scale-95',
               active
                 ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground',

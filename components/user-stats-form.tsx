@@ -46,7 +46,7 @@ export function UserStatsForm({
             value={bodyweightText}
             onChange={(event) => setBodyweightText(event.target.value)}
             onBlur={(event) => commitBodyweight(event.target.value)}
-            className="w-24 rounded-lg border border-border bg-secondary px-3 py-2 font-display text-lg font-bold text-foreground outline-none focus:border-primary"
+            className="min-h-11 w-24 rounded-lg border border-border bg-secondary px-3 font-display text-lg font-bold text-foreground outline-none focus:border-primary"
           />
           <span className="text-sm font-medium text-muted-foreground">lbs</span>
         </div>
@@ -77,7 +77,7 @@ export function UserStatsForm({
                 onClick={() => onChange({ eatingStyle: style })}
                 aria-pressed={active}
                 className={cn(
-                  'rounded-lg border p-3 text-left transition-colors',
+                  'min-h-11 rounded-lg border p-3 text-left transition-all active:scale-[0.98]',
                   active ? 'border-primary bg-primary/10' : 'border-border bg-secondary hover:border-primary/40',
                 )}
               >

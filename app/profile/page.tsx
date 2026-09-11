@@ -1,17 +1,10 @@
 'use client'
 
 import { FollowButton } from '@/components/follow-button'
+import { PageHeader } from '@/components/page-header'
 import { Tag } from '@/components/tag'
 import { useTrainedBy } from '@/hooks/use-trainedby'
-
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? '')
-    .join('')
-}
+import { initials } from '@/lib/utils'
 
 export default function ProfilePage() {
   const { influencers, followedCount, isFollowing } = useTrainedBy()
@@ -25,16 +18,15 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
-      <header className="mb-6">
-        <h1 className="font-display text-4xl font-bold uppercase leading-none tracking-tight text-balance">
-          Profile
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Following{' '}
-          <span className="font-semibold text-primary">{followedCount}</span> of{' '}
-          {influencers.length}. Your feed updates instantly as you follow.
-        </p>
-      </header>
+      <PageHeader
+        title="Profile"
+        description={
+          <>
+            Following <span className="font-semibold text-primary">{followedCount}</span> of{' '}
+            {influencers.length}. Your feed updates instantly as you follow.
+          </>
+        }
+      />
 
       <section aria-label="Creators">
         <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">

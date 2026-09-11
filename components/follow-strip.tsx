@@ -2,19 +2,11 @@
 
 import Link from 'next/link'
 import { useTrainedBy } from '@/hooks/use-trainedby'
+import { initials } from '@/lib/utils'
 
 // Compact "who you follow" strip: overlapping avatar circles for followed
 // creators plus a "+N" overflow chip. The whole strip links to Profile.
 // Purely presentational over the hook — no direct storage/repository access.
-function initials(name: string) {
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
-}
-
 export function FollowStrip({ max = 6 }: { max?: number }) {
   const { influencers, followedIds } = useTrainedBy()
   const followed = influencers.filter((influencer) => followedIds.includes(influencer.id))
