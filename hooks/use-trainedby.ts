@@ -17,6 +17,9 @@ export function useTrainedBy() {
       followedCount: state.followedIds.length,
       getInfluencer: repo.getInfluencer,
       isFollowing: (id: string) => state.followedIds.includes(id),
+      // Derived from live state so every "X of Y" count re-renders on follow changes.
+      countFollowedEndorsers: (creatorIds: string[]) =>
+        creatorIds.reduce((total, id) => (state.followedIds.includes(id) ? total + 1 : total), 0),
       follow: repo.follow,
       unfollow: repo.unfollow,
       toggleFollow: repo.toggleFollow,

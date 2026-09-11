@@ -9,6 +9,27 @@ function isFollowed(creatorIds: string[], followedIds: string[]): boolean {
   return creatorIds.some((id) => followedIds.includes(id))
 }
 
+function followedCountAmong(creatorIds: string[], followedIds: string[]): number {
+  return creatorIds.reduce((total, id) => (followedIds.includes(id) ? total + 1 : total), 0)
+}
+
+// Zero-followed items sink to the bottom; ties keep their original order.
+function sortByFollowedEndorsers<T>(
+  items: T[],
+  creatorsOf: (item: T) => string[],
+  followedIds: string[],
+): T[] {
+  return [...items].sort(
+    (a, b) => followedCountAmong(creatorsOf(b), followedIds) - followedCountAmong(creatorsOf(a), followedIds),
+  )
+}
+
+// How many of an item's creators the user currently follows. Used by the UI
+// to render the "X of Y people you follow" count.
+export function countFollowedEndorsers(creatorIds: string[]): number {
+  return followedCountAmong(creatorIds, getSnapshot().followedIds)
+}
+
 export function getInfluencers(): Influencer[] {
   return getSnapshot().data.influencers
 }
@@ -41,18 +62,24 @@ export function toggleFollow(id: string): void {
 
 export function getExercises(followedOnly: boolean): Exercise[] {
   const { data, followedIds } = getSnapshot()
-  if (!followedOnly) return data.exercises
-  return data.exercises.filter((exercise) => isFollowed(exercise.doneBy, followedIds))
+  const items = followedOnly
+    ? data.exercises.filter((exercise) => isFollowed(exercise.doneBy, followedIds))
+    : data.exercises
+  return sortByFollowedEndorsers(items, (exercise) => exercise.doneBy, followedIds)
 }
 
 export function getMeals(followedOnly: boolean): Meal[] {
   const { data, followedIds } = getSnapshot()
-  if (!followedOnly) return data.meals
-  return data.meals.filter((meal) => isFollowed(meal.madeBy, followedIds))
+  const items = followedOnly
+    ? data.meals.filter((meal) => isFollowed(meal.madeBy, followedIds))
+    : data.meals
+  return sortByFollowedEndorsers(items, (meal) => meal.madeBy, followedIds)
 }
 
 export function getSupplements(followedOnly: boolean): Supplement[] {
   const { data, followedIds } = getSnapshot()
-  if (!followedOnly) return data.supplements
-  return data.supplements.filter((supplement) => isFollowed(supplement.endorsedBy, followedIds))
+  const items = followedOnly
+    ? data.supplements.filter((supplement) => isFollowed(supplement.endorsedBy, followedIds))
+    : data.supplements
+  return sortByFollowedEndorsers(items, (supplement) => supplement.endorsedBy, followedIds)
 }
