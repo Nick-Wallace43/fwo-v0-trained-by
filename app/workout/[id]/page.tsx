@@ -42,7 +42,15 @@ export default function SavedWorkoutPage() {
           {workout.exercises.map((spec, index) => {
             const exercise = getExercise(spec.exerciseId)
             if (!exercise) return null
-            return <WorkoutExerciseRow key={`${spec.exerciseId}-${index}`} exercise={exercise} spec={spec} />
+            return (
+              <WorkoutExerciseRow
+                key={`${spec.exerciseId}-${index}`}
+                exercise={exercise}
+                spec={spec}
+                backHref={`/workout/${workout.id}`}
+                backLabel="Workout"
+              />
+            )
           })}
         </div>
       </div>

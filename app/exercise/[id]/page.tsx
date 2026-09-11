@@ -1,7 +1,8 @@
 'use client'
 
 import { ListOrdered, Users } from 'lucide-react'
-import { useParams } from 'next/navigation'
+import { useParams, useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import { AiInsightsCard } from '@/components/ai-insights-card'
 import { BackLink } from '@/components/back-link'
 import { EmptyState } from '@/components/empty-state'
@@ -11,16 +12,22 @@ import { Tag } from '@/components/tag'
 import { formatMovementType, getHowToSteps, getWhyItMatters } from '@/lib/exercise-insights'
 import { useTrainedBy } from '@/hooks/use-trainedby'
 
-export default function ExerciseDetailPage() {
+function ExerciseDetailContent() {
   const params = useParams<{ id: string }>()
+  const searchParams = useSearchParams()
   const { getExercise, followedCount, countFollowedEndorsers, isFollowing, getInfluencer } = useTrainedBy()
+
+  // Return the user to wherever they came from (e.g. the workout builder),
+  // falling back to the Workouts home when no origin was provided.
+  const backHref = searchParams.get('from') ?? '/'
+  const backLabel = searchParams.get('fromLabel') ?? 'Workouts'
 
   const exercise = getExercise(params.id)
 
   if (!exercise) {
     return (
       <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
-        <BackLink href="/" label="Workouts" />
+        <BackLink href={backHref} label={backLabel} />
         <EmptyState
           icon={Users}
           title="Exercise not found"
@@ -36,7 +43,7 @@ export default function ExerciseDetailPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
-      <BackLink href="/" label="Workouts" />
+      <BackLink href={backHref} label={backLabel} />
 
       <header className="mt-4">
         <h1 className="font-display text-3xl font-bold uppercase leading-none tracking-tight text-balance">
@@ -114,6 +121,14 @@ export default function ExerciseDetailPage() {
         <AiInsightsCard />
       </div>
     </div>
+  )
+}
+
+export default function ExerciseDetailPage() {
+  return (
+    <Suspense fallback={<div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6" />}>
+      <ExerciseDetailContent />
+    </Suspense>
   )
 }
 

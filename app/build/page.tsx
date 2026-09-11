@@ -2,14 +2,35 @@
 
 import { Sparkles } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
-import { BackLink } from '@/components/back-link'
+import { useEffect, useState } from 'react'
 import { MultiChipSelector } from '@/components/multi-chip-selector'
 import { PageHeader } from '@/components/page-header'
 import { WorkoutExerciseRow } from '@/components/workout-exercise-row'
 import { WorkoutSummaryHeader } from '@/components/workout-summary-header'
 import { useTrainedBy } from '@/hooks/use-trainedby'
 import type { GeneratedWorkout } from '@/lib/types'
+
+// Ephemeral builder state persisted for the tab's session so navigating into an
+// exercise detail page and back restores the user's selections and generated
+// workout instead of resetting to an empty builder.
+const BUILD_STATE_KEY = 'trainedby:build-state:v1'
+
+type PersistedBuildState = {
+  selectedGroups: string[]
+  workout: GeneratedWorkout | null
+  workoutName: string
+  savedId: string | null
+}
+
+function readBuildState(): PersistedBuildState | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = window.sessionStorage.getItem(BUILD_STATE_KEY)
+    return raw ? (JSON.parse(raw) as PersistedBuildState) : null
+  } catch {
+    return null
+  }
+}
 
 export default function BuildWorkoutPage() {
   const {
@@ -26,6 +47,35 @@ export default function BuildWorkoutPage() {
   const [workout, setWorkout] = useState<GeneratedWorkout | null>(null)
   const [workoutName, setWorkoutName] = useState('')
   const [savedId, setSavedId] = useState<string | null>(null)
+  const [hydrated, setHydrated] = useState(false)
+
+  // Restore any previously persisted builder state on mount (e.g. after
+  // returning from an exercise detail page). Runs client-side only to avoid a
+  // hydration mismatch.
+  useEffect(() => {
+    const saved = readBuildState()
+    if (saved) {
+      setSelectedGroups(saved.selectedGroups)
+      setWorkout(saved.workout)
+      setWorkoutName(saved.workoutName)
+      setSavedId(saved.savedId)
+    }
+    setHydrated(true)
+  }, [])
+
+  // Persist builder state after hydration so it survives navigation within the
+  // tab session.
+  useEffect(() => {
+    if (!hydrated) return
+    try {
+      window.sessionStorage.setItem(
+        BUILD_STATE_KEY,
+        JSON.stringify({ selectedGroups, workout, workoutName, savedId }),
+      )
+    } catch {
+      // Ignore storage write failures (e.g. private mode quota).
+    }
+  }, [hydrated, selectedGroups, workout, workoutName, savedId])
 
   const muscleGroups = getMuscleGroups()
 
@@ -99,6 +149,8 @@ export default function BuildWorkoutPage() {
                   spec={spec}
                   onSwap={() => handleSwap(index)}
                   swapDisabled={!canSwapExercise(workout, index)}
+                  backHref="/build"
+                  backLabel="Builder"
                 />
               )
             })}

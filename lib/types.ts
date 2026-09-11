@@ -33,12 +33,25 @@ export interface Macros {
   fat: number
 }
 
+// A recipe attached to a meal: what it makes, what you need, and how to make
+// it. Optional on Meal so a meal can exist without one (the detail page hides
+// sections it lacks).
+export interface Recipe {
+  servings: number
+  prepMinutes: number
+  cookMinutes: number
+  ingredients: string[]
+  steps: string[]
+}
+
 export interface Meal {
   id: string
   name: string
   macros: Macros
   style: string
   madeBy: string[] // Influencer ids
+  image?: string // Public path to a finished-dish photo, if one exists
+  recipe?: Recipe
 }
 
 export interface AppData {

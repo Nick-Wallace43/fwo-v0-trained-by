@@ -1,6 +1,8 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import { CreatorBadge } from '@/components/creator-badge'
 import { useTrainedBy } from '@/hooks/use-trainedby'
 import { cn } from '@/lib/utils'
@@ -15,27 +17,43 @@ export function ItemCard({
   attributionLabel,
   creatorIds,
   children,
+  href,
+  image,
 }: {
   title: string
   tags?: ReactNode
   attributionLabel: string
   creatorIds: string[]
   children?: ReactNode
+  // When provided, the whole card becomes a link to this route and gains an
+  // affordance chevron plus a stronger hover state.
+  href?: string
+  // Optional finished-dish/thumbnail photo shown at the top of the card.
+  image?: string
 }) {
   const { followedCount, countFollowedEndorsers } = useTrainedBy()
   const followedHere = countFollowedEndorsers(creatorIds)
   const muted = followedHere === 0
 
-  return (
-    <article
-      className={cn(
-        'rounded-xl border border-border bg-card p-4 transition-all',
-        muted ? 'opacity-55 saturate-50' : 'hover:border-primary/30',
-      )}
-    >
-      <h3 className="font-display text-xl font-semibold uppercase leading-none tracking-tight text-pretty">
-        {title}
-      </h3>
+  const inner = (
+    <>
+      {image ? (
+        <div className="mb-4 -mx-4 -mt-4 overflow-hidden rounded-t-xl border-b border-border bg-white">
+          <img
+            src={image || "/placeholder.svg"}
+            alt={title}
+            className="aspect-[16/9] w-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      ) : null}
+
+      <div className="flex items-start justify-between gap-3">
+        <h3 className="font-display text-xl font-semibold uppercase leading-none tracking-tight text-pretty">
+          {title}
+        </h3>
+        {href ? <ChevronRight className="mt-0.5 size-5 shrink-0 text-muted-foreground" aria-hidden="true" /> : null}
+      </div>
 
       {tags ? <div className="mt-3 flex flex-wrap gap-2">{tags}</div> : null}
 
@@ -61,6 +79,22 @@ export function ItemCard({
           </div>
         </div>
       ) : null}
-    </article>
+    </>
   )
+
+  const cardClass = cn(
+    'block rounded-xl border border-border bg-card p-4 transition-all',
+    muted ? 'opacity-55 saturate-50' : 'hover:border-primary/30',
+    href && !muted ? 'hover:border-primary/60' : null,
+  )
+
+  if (href) {
+    return (
+      <Link href={href} className={cn(cardClass, 'active:scale-[0.99]')}>
+        {inner}
+      </Link>
+    )
+  }
+
+  return <article className={cardClass}>{inner}</article>
 }

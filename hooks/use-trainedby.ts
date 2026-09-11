@@ -26,6 +26,7 @@ export function useTrainedBy() {
       getExercise: repo.getExercise,
       getExercises: repo.getExercises,
       getMuscleGroups: repo.getMuscleGroups,
+      getMeal: repo.getMeal,
       getMeals: repo.getMeals,
       getSupplements: repo.getSupplements,
       getSupplementCategories: repo.getSupplementCategories,

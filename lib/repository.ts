@@ -106,6 +106,10 @@ export function getExercises(followedOnly: boolean, muscleGroup?: string): Exerc
   return sortByFollowedEndorsers(items, (exercise) => exercise.doneBy, followedIds)
 }
 
+export function getMeal(id: string): Meal | undefined {
+  return getSnapshot().data.meals.find((meal) => meal.id === id)
+}
+
 export function getMeals(followedOnly: boolean): Meal[] {
   const { data, followedIds } = getSnapshot()
   const items = followedOnly
