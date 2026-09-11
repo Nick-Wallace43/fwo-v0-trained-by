@@ -9,20 +9,26 @@ const DATA_KEY = 'trainedby:data:v2'
 const FOLLOW_KEY = 'trainedby:followed:v2'
 const WORKOUTS_KEY = 'trainedby:workouts:v1'
 const USER_STATS_KEY = 'trainedby:userstats:v1'
+const ONBOARDING_KEY = 'trainedby:onboarding-complete:v1'
 
 export interface AppState {
   data: AppData
   followedIds: string[]
   savedWorkouts: SavedWorkout[]
   userStats: UserStats
+  onboardingComplete: boolean
 }
 
 // Stable reference used for SSR and hydration so client/server markup matches.
+// Onboarding defaults to true here so returning users never see a flash of the
+// onboarding overlay before hydration corrects state; true first-run users get
+// the overlay the instant hydrate() runs on the client.
 const SERVER_STATE: AppState = {
   data: seedData,
   followedIds: seedFollowedIds,
   savedWorkouts: [],
   userStats: defaultUserStats,
+  onboardingComplete: true,
 }
 
 let cache: AppState | null = null
@@ -46,9 +52,22 @@ function hydrate(): AppState {
     const userStats: UserStats = rawUserStats ? (JSON.parse(rawUserStats) as UserStats) : defaultUserStats
     if (!rawUserStats) localStorage.setItem(USER_STATS_KEY, JSON.stringify(defaultUserStats))
 
-    return { data, followedIds, savedWorkouts, userStats }
+    // Absence of this key is how we detect a true first run — it's written
+    // the moment onboarding is shown (see below), so a missing key here means
+    // no localStorage state has ever been written for this app.
+    const rawOnboarding = localStorage.getItem(ONBOARDING_KEY)
+    const onboardingComplete: boolean = rawOnboarding ? (JSON.parse(rawOnboarding) as boolean) : false
+    if (!rawOnboarding) localStorage.setItem(ONBOARDING_KEY, JSON.stringify(false))
+
+    return { data, followedIds, savedWorkouts, userStats, onboardingComplete }
   } catch {
-    return { data: seedData, followedIds: seedFollowedIds, savedWorkouts: [], userStats: defaultUserStats }
+    return {
+      data: seedData,
+      followedIds: seedFollowedIds,
+      savedWorkouts: [],
+      userStats: defaultUserStats,
+      onboardingComplete: true,
+    }
   }
 }
 
@@ -102,4 +121,14 @@ export function persistUserStats(stats: UserStats): void {
     // Ignore write failures (e.g. private mode); in-memory state still updates.
   }
   commit({ ...current, userStats: stats })
+}
+
+export function persistOnboardingComplete(complete: boolean): void {
+  const current = getSnapshot()
+  try {
+    localStorage.setItem(ONBOARDING_KEY, JSON.stringify(complete))
+  } catch {
+    // Ignore write failures (e.g. private mode); in-memory state still updates.
+  }
+  commit({ ...current, onboardingComplete: complete })
 }

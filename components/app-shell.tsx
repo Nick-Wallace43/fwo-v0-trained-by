@@ -6,6 +6,8 @@ import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { PrototypeNav } from '@/components/prototype-nav'
+import { OnboardingFlow } from '@/components/onboarding-flow'
+import { useTrainedBy } from '@/hooks/use-trainedby'
 
 const tabs = [
   { href: '/', label: 'Workouts', icon: Dumbbell },
@@ -16,6 +18,7 @@ const tabs = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+  const { influencers, onboardingComplete, completeOnboarding } = useTrainedBy()
 
   return (
     <div className="relative mx-auto flex min-h-svh w-full max-w-2xl flex-col border-x border-border">
@@ -31,6 +34,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
 
       <main className="flex-1">{children}</main>
+
+      {!onboardingComplete && (
+        <OnboardingFlow influencers={influencers} onComplete={completeOnboarding} />
+      )}
 
       <PrototypeNav />
 
