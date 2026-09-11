@@ -28,6 +28,13 @@ export function useTrainedBy() {
       getMuscleGroups: repo.getMuscleGroups,
       getMeals: repo.getMeals,
       getSupplements: repo.getSupplements,
+      generateWorkout: repo.generateWorkout,
+      canSwapExercise: repo.canSwapExercise,
+      swapExerciseInWorkout: repo.swapExerciseInWorkout,
+      estimateWorkoutDuration: repo.estimateWorkoutDuration,
+      savedWorkouts: state.savedWorkouts,
+      getSavedWorkout: (id: string) => state.savedWorkouts.find((workout) => workout.id === id),
+      saveWorkout: repo.saveWorkout,
     }),
     [state],
   )

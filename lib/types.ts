@@ -46,3 +46,33 @@ export interface AppData {
   supplements: Supplement[]
   meals: Meal[]
 }
+
+// Deterministic per-muscle-group rules the workout builder uses to pick
+// exercises. Lives alongside seed data since it's static ruleset config, not
+// user-mutable state.
+export interface WorkoutRule {
+  requiredMovementTypes: string[]
+  maxPerMovementType: number
+}
+
+export type WorkoutRules = Record<string, WorkoutRule>
+
+export interface GeneratedWorkoutExercise {
+  exerciseId: string
+  muscleGroup: string
+  movementType: string
+  compound: boolean
+  sets: number
+  repsLabel: string
+}
+
+export interface GeneratedWorkout {
+  muscleGroups: string[]
+  exercises: GeneratedWorkoutExercise[]
+}
+
+export interface SavedWorkout extends GeneratedWorkout {
+  id: string
+  name: string
+  createdAt: string // ISO date
+}

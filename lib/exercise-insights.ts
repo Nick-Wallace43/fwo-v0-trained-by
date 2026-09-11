@@ -136,6 +136,34 @@ const HOW_TO_STEPS: Record<string, string[]> = {
   ],
 }
 
+// Short reason phrases for the workout builder's "Why" line, e.g. "Horizontal
+// pull for mid-back thickness". Distinct from the fuller getWhyItMatters copy
+// used on the exercise detail page.
+const SHORT_WHY: Record<string, string> = {
+  'incline-press': 'upper-chest fullness',
+  'horizontal-press': 'chest thickness and mass',
+  fly: 'chest shape and separation',
+  'vertical-press': 'shoulder width',
+  hinge: 'posterior chain strength',
+  'horizontal-pull': 'mid-back thickness',
+  'vertical-pull': 'back width',
+  squat: 'quad size',
+  isolation: 'targeted muscle detail',
+  carry: 'grip and forearm endurance',
+  isometric: 'core and tendon stability',
+}
+
+export function getShortWhy(movementType: string): string {
+  return SHORT_WHY[movementType] ?? 'balanced development'
+}
+
+// Builds the workout builder's "Why" line. Counts are passed in rather than
+// baked into saved data, so the line stays reactive to live follow state even
+// when reopening a workout saved in the past.
+export function buildWhyLine(movementType: string, countForExercise: number, followedTotal: number): string {
+  return `${formatMovementType(movementType)} for ${getShortWhy(movementType)} \u2014 ${countForExercise} of ${followedTotal} you follow do this`
+}
+
 export function getHowToSteps(movementType: string): string[] {
   return (
     HOW_TO_STEPS[movementType] ?? [
