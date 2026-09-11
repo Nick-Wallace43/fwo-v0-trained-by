@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import { PrototypeNav } from '@/components/prototype-nav'
 
 const tabs = [
   { href: '/', label: 'Workouts', icon: Dumbbell },
@@ -30,6 +31,8 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
 
       <main className="flex-1">{children}</main>
+
+      <PrototypeNav />
 
       <nav
         aria-label="Primary"
