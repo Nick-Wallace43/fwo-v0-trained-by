@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, Instagram, Sparkles } from 'lucide-react'
+import { Check, Radar, Sparkles } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import type { Influencer } from '@/lib/types'
@@ -75,7 +75,7 @@ export function OnboardingFlow({
         {step === 'syncing' && (
           <div className="flex flex-1 flex-col items-center justify-center gap-6 text-center">
             <span className="flex size-14 items-center justify-center rounded-2xl bg-card text-primary">
-              <Instagram className="size-7 animate-pulse" />
+              <Radar className="size-7 animate-pulse" />
             </span>
             <div className="space-y-1">
               <h2 className="font-display text-xl font-bold uppercase tracking-wide">
