@@ -1,5 +1,6 @@
-import type { Exercise, Influencer, Meal, Supplement } from './types'
-import { getSnapshot, persistFollowedIds } from './storage'
+import type { Exercise, GeneratedWorkout, Influencer, Meal, SavedWorkout, Supplement } from './types'
+import * as builder from './workout-builder'
+import { getSnapshot, persistFollowedIds, persistSavedWorkouts } from './storage'
 
 // Data access API. UI never calls storage directly — it goes through here (via
 // the hook). Reads are derived from the current snapshot; writes go to storage.
@@ -110,4 +111,45 @@ export function getSupplements(followedOnly: boolean): Supplement[] {
     ? data.supplements.filter((supplement) => isFollowed(supplement.endorsedBy, followedIds))
     : data.supplements
   return sortByFollowedEndorsers(items, (supplement) => supplement.endorsedBy, followedIds)
+}
+
+// Workout builder — generation, swapping, and duration all run against the
+// live snapshot so results reflect current follow state; the algorithm
+// itself lives in workout-builder.ts and takes no dependency on storage.
+export function generateWorkout(muscleGroups: string[]): GeneratedWorkout {
+  const { data, followedIds } = getSnapshot()
+  return builder.generateWorkout(muscleGroups, data.exercises, followedIds)
+}
+
+export function canSwapExercise(workout: GeneratedWorkout, index: number): boolean {
+  const { data, followedIds } = getSnapshot()
+  return builder.canSwap(workout, index, data.exercises, followedIds)
+}
+
+export function swapExerciseInWorkout(workout: GeneratedWorkout, index: number): GeneratedWorkout {
+  const { data, followedIds } = getSnapshot()
+  return builder.swapExercise(workout, index, data.exercises, followedIds)
+}
+
+export function estimateWorkoutDuration(workout: GeneratedWorkout): number {
+  return builder.estimateDurationMinutes(workout)
+}
+
+export function getSavedWorkouts(): SavedWorkout[] {
+  return getSnapshot().savedWorkouts
+}
+
+export function getSavedWorkout(id: string): SavedWorkout | undefined {
+  return getSnapshot().savedWorkouts.find((workout) => workout.id === id)
+}
+
+export function saveWorkout(name: string, workout: GeneratedWorkout): SavedWorkout {
+  const saved: SavedWorkout = {
+    ...workout,
+    id: `workout-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    name,
+    createdAt: new Date().toISOString(),
+  }
+  persistSavedWorkouts([...getSnapshot().savedWorkouts, saved])
+  return saved
 }

@@ -1,4 +1,4 @@
-import type { AppData } from './types'
+import type { AppData, WorkoutRules } from './types'
 
 // SEED DATA — the app's initial state. On first run the storage adapter copies
 // this into localStorage; thereafter localStorage is the source of truth.
@@ -124,3 +124,22 @@ export const seedData: AppData = {
 
 // Default state: the user follows every creator.
 export const seedFollowedIds: string[] = seedData.influencers.map((influencer) => influencer.id)
+
+// Deterministic selection rules the workout builder applies per muscle group.
+// requiredMovementTypes must each appear at least once when the group is
+// picked (e.g. back needs one vertical pull AND one horizontal pull).
+// maxPerMovementType caps how many exercises of one movement type can appear
+// across the whole generated workout (never more than 2 of the same type).
+export const workoutRules: WorkoutRules = {
+  chest: { requiredMovementTypes: ['horizontal-press', 'incline-press'], maxPerMovementType: 2 },
+  back: { requiredMovementTypes: ['vertical-pull', 'horizontal-pull'], maxPerMovementType: 2 },
+  shoulders: { requiredMovementTypes: ['vertical-press', 'isolation'], maxPerMovementType: 2 },
+  biceps: { requiredMovementTypes: ['isolation'], maxPerMovementType: 2 },
+  triceps: { requiredMovementTypes: ['isolation'], maxPerMovementType: 2 },
+  quads: { requiredMovementTypes: ['squat'], maxPerMovementType: 2 },
+  hamstrings: { requiredMovementTypes: ['hinge'], maxPerMovementType: 2 },
+  calves: { requiredMovementTypes: ['isolation'], maxPerMovementType: 2 },
+  forearms: { requiredMovementTypes: [], maxPerMovementType: 2 },
+  traps: { requiredMovementTypes: [], maxPerMovementType: 2 },
+  abs: { requiredMovementTypes: [], maxPerMovementType: 2 },
+}

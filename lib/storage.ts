@@ -1,4 +1,4 @@
-import type { AppData } from './types'
+import type { AppData, SavedWorkout } from './types'
 import { seedData, seedFollowedIds } from './seed'
 
 // Low-level persistence adapter. Today this is localStorage; swapping to a real
@@ -7,14 +7,16 @@ import { seedData, seedFollowedIds } from './seed'
 
 const DATA_KEY = 'trainedby:data:v2'
 const FOLLOW_KEY = 'trainedby:followed:v2'
+const WORKOUTS_KEY = 'trainedby:workouts:v1'
 
 export interface AppState {
   data: AppData
   followedIds: string[]
+  savedWorkouts: SavedWorkout[]
 }
 
 // Stable reference used for SSR and hydration so client/server markup matches.
-const SERVER_STATE: AppState = { data: seedData, followedIds: seedFollowedIds }
+const SERVER_STATE: AppState = { data: seedData, followedIds: seedFollowedIds, savedWorkouts: [] }
 
 let cache: AppState | null = null
 const listeners = new Set<() => void>()
@@ -29,9 +31,13 @@ function hydrate(): AppState {
     const followedIds: string[] = rawFollow ? (JSON.parse(rawFollow) as string[]) : seedFollowedIds
     if (!rawFollow) localStorage.setItem(FOLLOW_KEY, JSON.stringify(seedFollowedIds))
 
-    return { data, followedIds }
+    const rawWorkouts = localStorage.getItem(WORKOUTS_KEY)
+    const savedWorkouts: SavedWorkout[] = rawWorkouts ? (JSON.parse(rawWorkouts) as SavedWorkout[]) : []
+    if (!rawWorkouts) localStorage.setItem(WORKOUTS_KEY, JSON.stringify(savedWorkouts))
+
+    return { data, followedIds, savedWorkouts }
   } catch {
-    return { data: seedData, followedIds: seedFollowedIds }
+    return { data: seedData, followedIds: seedFollowedIds, savedWorkouts: [] }
   }
 }
 
@@ -65,4 +71,14 @@ export function persistFollowedIds(ids: string[]): void {
     // Ignore write failures (e.g. private mode); in-memory state still updates.
   }
   commit({ ...current, followedIds: ids })
+}
+
+export function persistSavedWorkouts(workouts: SavedWorkout[]): void {
+  const current = getSnapshot()
+  try {
+    localStorage.setItem(WORKOUTS_KEY, JSON.stringify(workouts))
+  } catch {
+    // Ignore write failures (e.g. private mode); in-memory state still updates.
+  }
+  commit({ ...current, savedWorkouts: workouts })
 }
