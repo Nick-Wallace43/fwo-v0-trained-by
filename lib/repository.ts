@@ -3,7 +3,13 @@ import * as builder from './workout-builder'
 import * as macroEngine from './macro-engine'
 import * as dayBuilder from './day-builder'
 import { nutritionRules } from './seed'
-import { getSnapshot, persistFollowedIds, persistSavedWorkouts, persistUserStats } from './storage'
+import {
+  getSnapshot,
+  persistFollowedIds,
+  persistOnboardingComplete,
+  persistSavedWorkouts,
+  persistUserStats,
+} from './storage'
 
 // Data access API. UI never calls storage directly — it goes through here (via
 // the hook). Reads are derived from the current snapshot; writes go to storage.
@@ -212,4 +218,20 @@ export function swapDayMeal(day: Meal[], index: number, style: Meal['style'], ta
   const next = [...day]
   next[index] = alternative
   return next
+}
+
+// Onboarding — a one-time first-run flow. Completion writes the user's
+// confirmed follows and flips the flag so the overlay never shows again
+// until explicitly replayed (e.g. from the prototype nav).
+export function isOnboardingComplete(): boolean {
+  return getSnapshot().onboardingComplete
+}
+
+export function completeOnboarding(followedIds: string[]): void {
+  persistFollowedIds(followedIds)
+  persistOnboardingComplete(true)
+}
+
+export function replayOnboarding(): void {
+  persistOnboardingComplete(false)
 }

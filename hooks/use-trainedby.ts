@@ -44,6 +44,9 @@ export function useTrainedBy() {
       dayTotals: repo.dayTotals,
       isDayWithinTolerance: repo.isDayWithinTolerance,
       swapDayMeal: repo.swapDayMeal,
+      onboardingComplete: state.onboardingComplete,
+      completeOnboarding: repo.completeOnboarding,
+      replayOnboarding: repo.replayOnboarding,
     }),
     [state],
   )

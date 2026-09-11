@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
+import { useTrainedBy } from '@/hooks/use-trainedby'
 
 const links: { name: string; href: string }[] = [
   { name: 'Workouts', href: '/' },
@@ -22,6 +23,7 @@ const links: { name: string; href: string }[] = [
 
 export function PrototypeNav() {
   const pathname = usePathname()
+  const { replayOnboarding } = useTrainedBy()
   const [isShaking, setIsShaking] = useState(false)
 
   useEffect(() => {
@@ -66,6 +68,8 @@ export function PrototypeNav() {
               </Link>
             </DropdownMenuItem>
           ))}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onSelect={replayOnboarding}>Replay Onboarding</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onSelect={handleReset} className="text-red-600">
             Reset App Data
