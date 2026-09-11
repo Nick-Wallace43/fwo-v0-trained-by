@@ -1,8 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import type { Exercise } from '@/lib/types'
 import { InitialsAvatar } from '@/components/initials-avatar'
 import { Tag } from '@/components/tag'
+import { formatMovementType } from '@/lib/exercise-insights'
 import { useTrainedBy } from '@/hooks/use-trainedby'
 import { cn } from '@/lib/utils'
 
@@ -23,9 +25,10 @@ export function ExerciseCard({ exercise }: { exercise: Exercise }) {
   const overflow = followedDoers.length - shownDoers.length
 
   return (
-    <article
+    <Link
+      href={`/exercise/${exercise.id}`}
       className={cn(
-        'rounded-xl border border-border bg-card p-4 transition-all',
+        'block rounded-xl border border-border bg-card p-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
         muted ? 'opacity-55 saturate-50' : 'hover:border-primary/30',
       )}
     >
@@ -37,7 +40,7 @@ export function ExerciseCard({ exercise }: { exercise: Exercise }) {
 
       <div className="mt-3 flex flex-wrap gap-2">
         <Tag>{exercise.muscleGroup}</Tag>
-        <Tag variant="outline">{exercise.movementType}</Tag>
+        <Tag variant="outline">{formatMovementType(exercise.movementType)}</Tag>
         {exercise.compound ? <Tag variant="accent">Compound</Tag> : null}
       </div>
 
@@ -86,6 +89,6 @@ export function ExerciseCard({ exercise }: { exercise: Exercise }) {
           ) : null}
         </div>
       ) : null}
-    </article>
+    </Link>
   )
 }

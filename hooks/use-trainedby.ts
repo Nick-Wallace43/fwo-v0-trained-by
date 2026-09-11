@@ -23,6 +23,7 @@ export function useTrainedBy() {
       follow: repo.follow,
       unfollow: repo.unfollow,
       toggleFollow: repo.toggleFollow,
+      getExercise: repo.getExercise,
       getExercises: repo.getExercises,
       getMuscleGroups: repo.getMuscleGroups,
       getMeals: repo.getMeals,
