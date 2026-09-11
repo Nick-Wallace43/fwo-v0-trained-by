@@ -75,6 +75,8 @@ export default function NutritionPage() {
               title={meal.name}
               attributionLabel="As made by"
               creatorIds={meal.madeBy}
+              href={`/meal/${meal.id}`}
+              image={meal.image}
               tags={<Tag variant="accent">{meal.style}</Tag>}
             >
               <MacroRow macros={meal.macros} />

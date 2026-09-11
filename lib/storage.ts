@@ -5,7 +5,7 @@ import { defaultUserStats, seedData, seedFollowedIds } from './seed'
 // API means reimplementing this file (and repository) only. Nothing else changes.
 // A subscribe/snapshot store is exposed so React can bind via useSyncExternalStore.
 
-const DATA_KEY = 'trainedby:data:v3'
+const DATA_KEY = 'trainedby:data:v4'
 const FOLLOW_KEY = 'trainedby:followed:v2'
 const WORKOUTS_KEY = 'trainedby:workouts:v1'
 const USER_STATS_KEY = 'trainedby:userstats:v1'

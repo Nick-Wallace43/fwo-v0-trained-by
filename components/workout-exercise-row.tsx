@@ -16,20 +16,31 @@ export function WorkoutExerciseRow({
   spec,
   onSwap,
   swapDisabled,
+  backHref,
+  backLabel,
 }: {
   exercise: Exercise
   spec: GeneratedWorkoutExercise
   onSwap?: () => void
   swapDisabled?: boolean
+  // Where the exercise detail page's back link should return to. When set, it
+  // is passed through as query params so returning lands on the originating
+  // page (e.g. the workout builder) instead of the Workouts home.
+  backHref?: string
+  backLabel?: string
 }) {
   const { countFollowedEndorsers, followedCount } = useTrainedBy()
   const count = countFollowedEndorsers(exercise.doneBy)
   const why = buildWhyLine(spec.movementType, count, followedCount)
 
+  const detailHref = backHref
+    ? `/exercise/${exercise.id}?from=${encodeURIComponent(backHref)}&fromLabel=${encodeURIComponent(backLabel ?? 'Back')}`
+    : `/exercise/${exercise.id}`
+
   return (
     <div className="flex items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/50">
       <Link
-        href={`/exercise/${exercise.id}`}
+        href={detailHref}
         className="min-w-0 flex-1 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary"
         aria-label={`View details for ${exercise.name}`}
       >
