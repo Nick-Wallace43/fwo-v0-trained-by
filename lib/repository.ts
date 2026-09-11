@@ -1,6 +1,9 @@
-import type { Exercise, GeneratedWorkout, Influencer, Meal, SavedWorkout, Supplement } from './types'
+import type { Exercise, GeneratedWorkout, Influencer, Macros, Meal, SavedWorkout, Supplement, UserStats } from './types'
 import * as builder from './workout-builder'
-import { getSnapshot, persistFollowedIds, persistSavedWorkouts } from './storage'
+import * as macroEngine from './macro-engine'
+import * as dayBuilder from './day-builder'
+import { nutritionRules } from './seed'
+import { getSnapshot, persistFollowedIds, persistSavedWorkouts, persistUserStats } from './storage'
 
 // Data access API. UI never calls storage directly — it goes through here (via
 // the hook). Reads are derived from the current snapshot; writes go to storage.
@@ -152,4 +155,49 @@ export function saveWorkout(name: string, workout: GeneratedWorkout): SavedWorko
   }
   persistSavedWorkouts([...getSnapshot().savedWorkouts, saved])
   return saved
+}
+
+// Nutrition — user stats persist to storage; macro targets and day-building
+// are pure functions in macro-engine.ts / day-builder.ts that the repository
+// wires to the live ruleset and meal catalog.
+export function getUserStats(): UserStats {
+  return getSnapshot().userStats
+}
+
+export function saveUserStats(stats: UserStats): void {
+  persistUserStats(stats)
+}
+
+export function getMacroTargets(stats: UserStats): Macros {
+  return macroEngine.computeMacroTargets(stats.bodyweight, stats.goal, nutritionRules)
+}
+
+// Meals of a given eating style, always ranked by followed-endorser count
+// descending (independent of the followedOnly display filter).
+export function getMealsByStyle(followedOnly: boolean, style: Meal['style']): Meal[] {
+  return getMeals(followedOnly).filter((meal) => meal.style === style)
+}
+
+function stylePool(style: Meal['style']): Meal[] {
+  return getMeals(false).filter((meal) => meal.style === style)
+}
+
+export function buildDay(style: Meal['style'], target: Macros): Meal[] {
+  return dayBuilder.buildDay(stylePool(style), target)
+}
+
+export function isDayWithinTolerance(day: Meal[], target: Macros): boolean {
+  return dayBuilder.isDayWithinTolerance(day, target)
+}
+
+export function dayTotals(day: Meal[]): Macros {
+  return dayBuilder.dayTotals(day)
+}
+
+export function swapDayMeal(day: Meal[], index: number, style: Meal['style'], target: Macros): Meal[] {
+  const alternative = dayBuilder.findBestSwap(day, index, stylePool(style), target)
+  if (!alternative) return day
+  const next = [...day]
+  next[index] = alternative
+  return next
 }

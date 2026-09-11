@@ -76,3 +76,22 @@ export interface SavedWorkout extends GeneratedWorkout {
   name: string
   createdAt: string // ISO date
 }
+
+// Nutrition domain. Goal and eating style are user-set inputs; nutrition
+// rules (below) are static ruleset config the macro engine applies to them.
+export type Goal = 'cut' | 'maintain' | 'bulk'
+export type EatingStyle = 'hardcore' | 'balanced'
+
+export interface UserStats {
+  bodyweight: number
+  goal: Goal
+  eatingStyle: EatingStyle
+}
+
+export interface NutritionRule {
+  // Fraction applied to maintenance calories, e.g. -0.2 for a 20% cut.
+  calorieAdjustment: number
+  proteinPerLb: number
+}
+
+export type NutritionRules = Record<Goal, NutritionRule>

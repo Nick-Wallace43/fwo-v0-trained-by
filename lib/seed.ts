@@ -1,4 +1,4 @@
-import type { AppData, WorkoutRules } from './types'
+import type { AppData, NutritionRules, UserStats, WorkoutRules } from './types'
 
 // SEED DATA — the app's initial state. On first run the storage adapter copies
 // this into localStorage; thereafter localStorage is the source of truth.
@@ -142,4 +142,19 @@ export const workoutRules: WorkoutRules = {
   forearms: { requiredMovementTypes: [], maxPerMovementType: 2 },
   traps: { requiredMovementTypes: [], maxPerMovementType: 2 },
   abs: { requiredMovementTypes: [], maxPerMovementType: 2 },
+}
+
+// Deterministic per-goal rules the macro engine applies to bodyweight.
+// calorieAdjustment is a fraction of maintenance (bodyweight x 15); protein
+// is set per pound of bodyweight, staying high across every goal.
+export const nutritionRules: NutritionRules = {
+  cut: { calorieAdjustment: -0.2, proteinPerLb: 1.0 },
+  maintain: { calorieAdjustment: 0, proteinPerLb: 0.85 },
+  bulk: { calorieAdjustment: 0.15, proteinPerLb: 1.0 },
+}
+
+export const defaultUserStats: UserStats = {
+  bodyweight: 180,
+  goal: 'maintain',
+  eatingStyle: 'balanced',
 }
