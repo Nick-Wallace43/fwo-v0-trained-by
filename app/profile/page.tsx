@@ -1,17 +1,11 @@
 'use client'
 
+import { CreatorAvatar } from '@/components/creator-avatar'
 import { FollowButton } from '@/components/follow-button'
+import { PageHeader } from '@/components/page-header'
 import { Tag } from '@/components/tag'
 import { useTrainedBy } from '@/hooks/use-trainedby'
-
-function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? '')
-    .join('')
-}
+import { cn } from '@/lib/utils'
 
 export default function ProfilePage() {
   const { influencers, followedCount, isFollowing } = useTrainedBy()
@@ -25,16 +19,15 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
-      <header className="mb-6">
-        <h1 className="font-display text-4xl font-bold uppercase leading-none tracking-tight text-balance">
-          Profile
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Following{' '}
-          <span className="font-semibold text-primary">{followedCount}</span> of{' '}
-          {influencers.length}. Your feed updates instantly as you follow.
-        </p>
-      </header>
+      <PageHeader
+        title="Profile"
+        description={
+          <>
+            Following <span className="font-semibold text-primary">{followedCount}</span> of{' '}
+            {influencers.length}. Your feed updates instantly as you follow.
+          </>
+        }
+      />
 
       <section aria-label="Creators">
         <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
@@ -54,17 +47,12 @@ export default function ProfilePage() {
                 }
               >
                 <div className="flex items-start gap-3">
-                  <div
-                    aria-hidden="true"
-                    className={
-                      'flex size-12 shrink-0 items-center justify-center rounded-full font-display text-base font-bold uppercase tracking-tight ' +
-                      (following
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-secondary text-secondary-foreground')
-                    }
-                  >
-                    {initials(influencer.name)}
-                  </div>
+                  <CreatorAvatar
+                    id={influencer.id}
+                    name={influencer.name}
+                    size={48}
+                    className={cn('ring-2', following ? 'ring-primary' : 'ring-border opacity-70')}
+                  />
                   <div className="min-w-0 flex-1">
                     <p className="font-display text-lg font-semibold uppercase leading-none tracking-tight text-balance">
                       {influencer.name}

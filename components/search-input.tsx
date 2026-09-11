@@ -18,7 +18,7 @@ export function SearchInput({
   return (
     <div
       className={cn(
-        'flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 focus-within:border-primary/50',
+        'flex min-h-11 items-center gap-2 rounded-lg border border-border bg-card px-3 focus-within:border-primary/50',
         className,
       )}
     >
@@ -36,7 +36,7 @@ export function SearchInput({
           type="button"
           onClick={() => onChange('')}
           aria-label="Clear search"
-          className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+          className="-mr-1.5 flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-all hover:text-foreground active:scale-90"
         >
           <X className="size-4" />
         </button>

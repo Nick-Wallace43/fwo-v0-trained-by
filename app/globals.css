@@ -74,3 +74,10 @@
   50% { transform: rotate(0deg); }
   100% { transform: rotate(0deg); }
 }
+
+/* Fades the edges of horizontally scrollable rows (muscle-group chips, saved
+   workouts) so overflow reads as a scroll affordance instead of a hard cut. */
+.edge-fade-x {
+  mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
+}

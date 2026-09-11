@@ -16,7 +16,7 @@ export function FollowButton({ influencerId }: { influencerId: string }) {
       onClick={() => toggleFollow(influencerId)}
       aria-pressed={following}
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold uppercase tracking-wide transition-all active:scale-95',
+        'inline-flex min-h-11 items-center gap-1.5 rounded-full px-4 text-sm font-semibold uppercase tracking-wide transition-all active:scale-95',
         following
           ? 'bg-primary text-primary-foreground hover:opacity-90'
           : 'border border-border bg-transparent text-muted-foreground hover:border-primary/40 hover:text-foreground',

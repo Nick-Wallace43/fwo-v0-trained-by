@@ -3,8 +3,9 @@
 import { Check, Radar, Sparkles } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { CreatorAvatar } from '@/components/creator-avatar'
 import type { Influencer } from '@/lib/types'
-import { cn, initials } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 type Step = 'welcome' | 'syncing' | 'review'
 
@@ -118,21 +119,16 @@ export function OnboardingFlow({
                     onClick={() => toggle(influencer.id)}
                     aria-pressed={isSelected}
                     className={cn(
-                      'flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors',
+                      'flex min-h-11 w-full items-center gap-3 rounded-lg border p-3 text-left transition-all active:scale-[0.98]',
                       isSelected ? 'border-primary/60 bg-primary/10' : 'border-border bg-card opacity-60',
                     )}
                   >
-                    <span
-                      className={cn(
-                        'flex size-9 shrink-0 items-center justify-center rounded-full font-display text-xs font-semibold uppercase ring-1',
-                        isSelected
-                          ? 'bg-primary/15 text-primary ring-primary/30'
-                          : 'bg-muted text-muted-foreground ring-border',
-                      )}
-                      aria-hidden="true"
-                    >
-                      {initials(influencer.name)}
-                    </span>
+                    <CreatorAvatar
+                      id={influencer.id}
+                      name={influencer.name}
+                      size={36}
+                      className={cn('ring-1', isSelected ? 'ring-primary/30' : 'opacity-60 ring-border')}
+                    />
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-display text-sm font-semibold uppercase tracking-wide">
                         {influencer.name}

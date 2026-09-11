@@ -1,9 +1,11 @@
 'use client'
 
-import { ArrowLeft, Sparkles } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
+import { BackLink } from '@/components/back-link'
 import { MultiChipSelector } from '@/components/multi-chip-selector'
+import { PageHeader } from '@/components/page-header'
 import { WorkoutExerciseRow } from '@/components/workout-exercise-row'
 import { WorkoutSummaryHeader } from '@/components/workout-summary-header'
 import { useTrainedBy } from '@/hooks/use-trainedby'
@@ -52,22 +54,12 @@ export default function BuildWorkoutPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
-      <Link
-        href="/"
-        className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Workouts
-      </Link>
-
-      <header className="mb-5">
-        <h1 className="font-display text-4xl font-bold uppercase leading-none tracking-tight text-balance">
-          Build a Workout
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground text-pretty">
-          Pick muscle groups and we&apos;ll build a workout from the creators you follow.
-        </p>
-      </header>
+      <PageHeader
+        title="Build a Workout"
+        description="Pick muscle groups and we'll build a workout from the creators you follow."
+        backHref="/"
+        backLabel="Workouts"
+      />
 
       <section className="mb-6 flex flex-col gap-3">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Muscle groups</h2>
@@ -81,7 +73,7 @@ export default function BuildWorkoutPage() {
           type="button"
           onClick={handleGenerate}
           disabled={selectedGroups.length === 0}
-          className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-bold uppercase tracking-wide text-primary-foreground transition-opacity disabled:opacity-40"
+          className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-bold uppercase tracking-wide text-primary-foreground transition-all active:scale-[0.98] disabled:opacity-40 disabled:active:scale-100"
         >
           <Sparkles className="size-4" />
           {workout ? 'Regenerate Workout' : 'Generate Workout'}
@@ -136,13 +128,13 @@ export default function BuildWorkoutPage() {
                   value={workoutName}
                   onChange={(event) => setWorkoutName(event.target.value)}
                   placeholder="e.g. Back &amp; Biceps Day"
-                  className="min-w-[10rem] flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                  className="min-h-11 min-w-[10rem] flex-1 rounded-lg border border-border bg-background px-3 text-sm outline-none focus:border-primary"
                 />
                 <button
                   type="button"
                   onClick={handleSave}
                   disabled={workoutName.trim().length === 0}
-                  className="rounded-lg bg-primary px-4 py-2 text-sm font-bold uppercase tracking-wide text-primary-foreground disabled:opacity-40"
+                  className="min-h-11 rounded-lg bg-primary px-4 text-sm font-bold uppercase tracking-wide text-primary-foreground transition-all active:scale-95 disabled:opacity-40 disabled:active:scale-100"
                 >
                   Save Workout
                 </button>

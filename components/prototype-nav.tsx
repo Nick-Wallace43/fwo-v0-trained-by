@@ -62,7 +62,7 @@ export function PrototypeNav() {
             <DropdownMenuItem key={link.href} asChild>
               <Link
                 href={link.href}
-                className={cn(pathname === link.href && 'bg-[#DCFEA8]')}
+                className={cn(pathname === link.href && 'bg-[#DCFEA8] text-black')}
               >
                 {link.name}
               </Link>
@@ -71,7 +71,7 @@ export function PrototypeNav() {
           <DropdownMenuSeparator />
           <DropdownMenuItem onSelect={replayOnboarding}>Replay Onboarding</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={handleReset} className="text-red-600">
+          <DropdownMenuItem onSelect={handleReset} className="text-destructive">
             Reset App Data
           </DropdownMenuItem>
         </DropdownMenuContent>

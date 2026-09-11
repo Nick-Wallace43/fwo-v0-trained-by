@@ -1,8 +1,8 @@
 'use client'
 
-import { ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { BackLink } from '@/components/back-link'
+import { PageHeader } from '@/components/page-header'
 import { WorkoutExerciseRow } from '@/components/workout-exercise-row'
 import { WorkoutSummaryHeader } from '@/components/workout-summary-header'
 import { useTrainedBy } from '@/hooks/use-trainedby'
@@ -12,20 +12,10 @@ export default function SavedWorkoutPage() {
   const { getSavedWorkout, getExercise, estimateWorkoutDuration } = useTrainedBy()
   const workout = getSavedWorkout(params.id)
 
-  const backLink = (
-    <Link
-      href="/"
-      className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground"
-    >
-      <ArrowLeft className="size-4" />
-      Workouts
-    </Link>
-  )
-
   if (!workout) {
     return (
       <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
-        {backLink}
+        <BackLink href="/" label="Workouts" className="mb-4" />
         <p className="text-sm text-muted-foreground">Workout not found.</p>
       </div>
     )
@@ -40,14 +30,7 @@ export default function SavedWorkoutPage() {
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
-      {backLink}
-
-      <header className="mb-5">
-        <h1 className="font-display text-4xl font-bold uppercase leading-none tracking-tight text-balance">
-          {workout.name}
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">Saved {createdLabel}</p>
-      </header>
+      <PageHeader title={workout.name} description={`Saved ${createdLabel}`} backHref="/" backLabel="Workouts" />
 
       <div className="flex flex-col gap-4">
         <WorkoutSummaryHeader

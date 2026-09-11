@@ -19,7 +19,7 @@ export function ChipSelector({
     <div
       role="tablist"
       aria-label={ariaLabel}
-      className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="edge-fade-x -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {options.map((option) => {
         const active = value === option.id
@@ -31,10 +31,10 @@ export function ChipSelector({
             aria-selected={active}
             onClick={() => onChange(option.id)}
             className={cn(
-              'shrink-0 whitespace-nowrap rounded-full border px-4 py-1.5 text-sm font-semibold uppercase tracking-wide transition-colors',
+              'inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full border px-4 text-sm font-semibold uppercase tracking-wide transition-all active:scale-95',
               active
                 ? 'border-primary bg-primary text-primary-foreground'
-                : 'border-border bg-card text-muted-foreground hover:text-foreground',
+                : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground',
             )}
           >
             {option.label}

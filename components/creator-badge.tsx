@@ -19,7 +19,7 @@ export function CreatorBadge({ influencerId }: { influencerId: string }) {
       aria-pressed={following}
       aria-label={`${following ? 'Unfollow' : 'Follow'} ${influencer.name}`}
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
+        'inline-flex min-h-9 items-center gap-1.5 rounded-full border px-2.5 text-xs font-medium transition-all active:scale-95',
         following
           ? 'border-primary/40 bg-primary/15 text-primary'
           : 'border-border bg-secondary text-secondary-foreground hover:border-primary/40 hover:text-primary',
