@@ -2,16 +2,21 @@
 
 import { Pill } from 'lucide-react'
 import { useState } from 'react'
+import { ChipSelector } from '@/components/chip-selector'
 import { ContentLayout } from '@/components/content-layout'
 import { EmptyState } from '@/components/empty-state'
-import { ItemCard } from '@/components/item-card'
-import { Tag } from '@/components/tag'
+import { SupplementCard } from '@/components/supplement-card'
+import { TrustBanner } from '@/components/trust-banner'
 import { useTrainedBy } from '@/hooks/use-trainedby'
 
 export default function SupplementsPage() {
   const [followedOnly, setFollowedOnly] = useState(true)
-  const { getSupplements } = useTrainedBy()
-  const supplements = getSupplements(followedOnly)
+  const [category, setCategory] = useState('all')
+  const { getSupplements, getSupplementCategories } = useTrainedBy()
+
+  const categories = getSupplementCategories()
+  const categoryOptions = [{ id: 'all', label: 'All' }, ...categories.map((c) => ({ id: c, label: c }))]
+  const supplements = getSupplements(followedOnly, category === 'all' ? undefined : category)
 
   return (
     <ContentLayout
@@ -19,6 +24,12 @@ export default function SupplementsPage() {
       description="Stacks endorsed by the creators you follow."
       followedOnly={followedOnly}
       onFilterChange={setFollowedOnly}
+      topSlot={
+        <div className="mb-5 flex flex-col gap-4">
+          <TrustBanner />
+          <ChipSelector options={categoryOptions} value={category} onChange={setCategory} ariaLabel="Category" />
+        </div>
+      }
     >
       {supplements.length === 0 ? (
         <EmptyState
@@ -29,13 +40,7 @@ export default function SupplementsPage() {
       ) : (
         <div className="flex flex-col gap-3">
           {supplements.map((supplement) => (
-            <ItemCard
-              key={supplement.id}
-              title={supplement.name}
-              attributionLabel="Endorsed by"
-              creatorIds={supplement.endorsedBy}
-              tags={<Tag variant="outline">{supplement.category}</Tag>}
-            />
+            <SupplementCard key={supplement.id} supplement={supplement} />
           ))}
         </div>
       )}
